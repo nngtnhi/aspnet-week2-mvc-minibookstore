@@ -1,0 +1,108 @@
+@model BookDetailViewModel
+
+@{
+    ViewData["Title"] = "Chi Tiết Sách";
+}
+
+<div class="page-header">
+    <div>
+        <h2 class="page-title">Chi Tiết Sách</h2>
+        <p class="page-description">
+            Thông tin chi tiết của cuốn sách trong kho.
+        </p>
+    </div>
+
+    <a class="btn btn-light" href="/Books">
+        Quay lại danh sách
+    </a>
+</div>
+
+<div class="detail-layout">
+    <div>
+        <table class="table table-bordered">
+            <tr>
+                <th>ID</th>
+                <td>@Model.Id</td>
+            </tr>
+
+            <tr>
+                <th>ISBN</th>
+                <td>@Model.Isbn</td>
+            </tr>
+
+            <tr>
+                <th>Tên sách</th>
+                <td>@Model.Title</td>
+            </tr>
+
+            <tr>
+                <th>Thể loại</th>
+                <td>@Model.Category</td>
+            </tr>
+
+            <tr>
+                <th>Nhà xuất bản</th>
+                <td>@Model.Publisher</td>
+            </tr>
+
+            <tr>
+                <th>Giá bán</th>
+                <td>@Model.PriceText</td>
+            </tr>
+
+            <tr>
+                <th>Số lượng tồn kho</th>
+                <td>@Model.StockQuantity</td>
+            </tr>
+
+            <tr>
+                <th>Mức tồn tối thiểu</th>
+                <td>@Model.MinStockThreshold</td>
+            </tr>
+
+            <tr>
+                <th>Giá trị tồn kho</th>
+                <td>@Model.InventoryValueText</td>
+            </tr>
+
+            <tr>
+                <th>Trạng thái</th>
+                <td>
+                    <span class="stock-status-badge @(Model.StockStatus?.Contains("Hết") ?? false ? "danger" : Model.StockStatus?.Contains("Cần") ?? false ? "warning" : "success")">
+                        @Model.StockStatus
+                    </span>
+                </td>
+            </tr>
+
+            <tr>
+                <th>Gợi ý nhập hàng</th>
+                <td>@Model.ReorderSuggestion</td>
+            </tr>
+
+            <tr>
+                <th>Cập nhật lần cuối</th>
+                <td>@Model.LastRestockedText</td>
+            </tr>
+        </table>
+    </div>
+
+    <div>
+        <div class="side-card warning">
+            <h4>Trạng thái tồn kho</h4>
+            <h3>@Model.StockStatus</h3>
+            <p>@Model.ReorderSuggestion</p>
+        </div>
+
+        <div class="side-card info">
+            <h4>Giá trị tồn kho hiện tại</h4>
+            <h3>@Model.InventoryValueText</h3>
+            <p>Tính theo giá bán và số lượng tồn kho hiện có.</p>
+        </div>
+
+        <div class="side-card success">
+            <h4>Cập nhật lần cuối</h4>
+            <h3>@Model.LastRestockedText</h3>
+            <p>Thông tin sách được cập nhật gần nhất.</p>
+        </div>
+    </div>
+</div>
