@@ -1,0 +1,108 @@
+@model BookSearchViewModel
+
+@{
+    ViewData["Title"] = "Tìm kiếm sách";
+}
+
+<div class="page-header">
+    <div>
+        <h2 class="page-title">Tìm kiếm sách</h2>
+        <p class="page-description">
+            Form GET dùng Query String để tìm theo từ khóa (tên, thể loại, ISBN) và giá tối thiểu.
+        </p>
+    </div>
+
+    <a class="btn btn-light"
+       asp-controller="Books"
+       asp-action="Index">
+        Quay lại danh sách
+    </a>
+</div>
+
+<div class="form-layout">
+    <form class="form-box"
+          asp-controller="Books"
+          asp-action="Search"
+          method="get">
+
+        <div class="form-group">
+            <label asp-for="Keyword">Từ khóa</label>
+            <input asp-for="Keyword"
+                   class="form-control"
+                   placeholder="Ví dụ: Clean Code, Văn học, ISBN-978" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="MinPrice">Giá tối thiểu (VNĐ)</label>
+            <input asp-for="MinPrice"
+                   class="form-control"
+                   placeholder="Ví dụ: 100000" />
+        </div>
+
+        <button class="btn btn-primary" type="submit">
+            Tìm kiếm
+        </button>
+
+        <a class="btn btn-secondary ms-2"
+           asp-controller="Books"
+           asp-action="Search">
+            Reset
+        </a>
+    </form>
+
+    <div>
+        <h3>Kết quả tìm kiếm</h3>
+
+        <p>
+            Từ khóa: <strong>@Model.Keyword</strong>
+        </p>
+
+        <p>
+            Giá tối thiểu: <strong>@(Model.MinPrice?.ToString("N0") ?? "—")</strong>
+        </p>
+
+        @if (Model.Books.Count == 0)
+        {
+            <p>Không tìm thấy sách phù hợp.</p>
+        }
+        else
+        {
+            <table class="table table-bordered table-striped align-middle">
+                <thead>
+                    <tr>
+                        <th>Tên sách</th>
+                        <th>ISBN</th>
+                        <th>Thể loại</th>
+                        <th>Giá bán</th>
+                        <th>Số lượng</th>
+                        <th>Trạng thái</th>
+                        <th>Chi tiết</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var item in Model.Books)
+                    {
+                        <tr>
+                            <td>@item.Title</td>
+                            <td>@item.Isbn</td>
+                            <td>@item.Category</td>
+                            <td>@item.PriceText</td>
+                            <td>@item.StockQuantity</td>
+                            <td>
+                                <span class="@item.StockStatusClass">@item.StockStatus</span>
+                            </td>
+                            <td>
+                                <a asp-controller="Books"
+                                   asp-action="Detail"
+                                   asp-route-id="@item.Id">
+                                    Xem
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>

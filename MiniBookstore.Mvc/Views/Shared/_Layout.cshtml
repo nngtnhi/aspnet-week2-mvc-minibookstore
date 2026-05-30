@@ -20,13 +20,19 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Trang Chủ</a>
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Books" asp-action="Index">Danh Mục Sách</a>
+                            <a class="nav-link" asp-area="" asp-controller="Books" asp-action="Index">List</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Books" asp-action="Stats">Thống Kê</a>
+                            <a class="nav-link" asp-area="" asp-controller="Books" asp-action="Stats">Stats</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Books" asp-action="Search">Search</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Books" asp-action="Create">Create</a>
                         </li>
                     </ul>
                 </div>
@@ -41,7 +47,7 @@
 
     <footer class="border-top footer text-muted mt-auto py-3">
         <div class="container">
-            &copy; 2026 - MiniBookstore - Lab02 ASP.NET Core MVC
+            &copy; 2026 - MiniBookstore - Lab03 ASP.NET Core MVC
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

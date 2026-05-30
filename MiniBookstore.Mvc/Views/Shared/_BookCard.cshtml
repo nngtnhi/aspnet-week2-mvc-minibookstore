@@ -1,0 +1,36 @@
+@model BookListItemViewModel
+
+<div class="book-card">
+    <h3>@Model.Title</h3>
+
+    <p class="book-meta">
+        ISBN: @Model.Isbn
+    </p>
+
+    <p class="book-meta">
+        Thể loại: @Model.Category
+    </p>
+
+    <p class="book-meta">
+        NXB: @Model.Publisher
+    </p>
+
+    <p class="book-price">
+        @Model.PriceText
+    </p>
+
+    <p>
+        Số lượng: <strong>@Model.StockQuantity</strong>
+    </p>
+
+    <span class="@Model.StockStatusClass">@Model.StockStatus</span>
+
+    <div class="card-actions">
+        <a class="btn btn-light btn-sm"
+           asp-controller="Books"
+           asp-action="Detail"
+           asp-route-id="@Model.Id">
+            Xem chi tiết
+        </a>
+    </div>
+</div>

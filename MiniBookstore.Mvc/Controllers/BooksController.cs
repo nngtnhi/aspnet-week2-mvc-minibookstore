@@ -44,6 +44,51 @@ public class BooksController : Controller
         return View(stats);
     }
 
+    [HttpGet]
+    public IActionResult Search(string? keyword, decimal? minPrice)
+    {
+        var books = _bookService.Search(keyword, minPrice)
+            .Select(ToListItemViewModel)
+            .ToList();
+
+        var viewModel = new BookSearchViewModel
+        {
+            Keyword = keyword ?? "",
+            MinPrice = minPrice,
+            Books = books
+        };
+
+        return View(viewModel);
+    }
+
+    [HttpGet]
+    public IActionResult Create()
+    {
+        var viewModel = new BookCreateViewModel
+        {
+            StockQuantity = 1,
+            MinStockThreshold = 5
+        };
+
+        return View(viewModel);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Create(BookCreateViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(model);
+        }
+
+        _bookService.Create(model);
+
+        TempData["SuccessMessage"] = "Đã thêm sách thành công.";
+
+        return RedirectToAction(nameof(Index));
+    }
+
     public IActionResult Welcome()
     {
         return Content("Chào mừng đến với hệ thống quản lý Kho Sách - MVC Lab02");

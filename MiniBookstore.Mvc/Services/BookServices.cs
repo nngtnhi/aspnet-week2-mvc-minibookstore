@@ -115,6 +115,50 @@ public class BookService
         return _books.FirstOrDefault(b => b.Id == id);
     }
 
+    public List<Book> Search(string? keyword, decimal? minPrice)
+    {
+        var query = _books.AsEnumerable();
+
+        if (!string.IsNullOrWhiteSpace(keyword))
+        {
+            query = query.Where(book =>
+                book.Title.Contains(keyword, StringComparison.OrdinalIgnoreCase) ||
+                book.Category.Contains(keyword, StringComparison.OrdinalIgnoreCase) ||
+                book.Isbn.Contains(keyword, StringComparison.OrdinalIgnoreCase));
+        }
+
+        if (minPrice.HasValue)
+        {
+            query = query.Where(book => book.Price >= minPrice.Value);
+        }
+
+        return query.ToList();
+    }
+
+    public Book Create(BookCreateViewModel model)
+    {
+        var newId = _books.Count == 0
+            ? 1
+            : _books.Max(book => book.Id) + 1;
+
+        var book = new Book
+        {
+            Id = newId,
+            Isbn = $"ISBN-NEW-{newId:000}",
+            Title = model.Title,
+            Category = model.Category,
+            Publisher = model.Publisher,
+            Price = model.Price,
+            StockQuantity = model.StockQuantity,
+            MinStockThreshold = model.MinStockThreshold,
+            LastRestockedAt = DateTime.Now
+        };
+
+        _books.Add(book);
+
+        return book;
+    }
+
     public BookStatsViewModel GetStats()
     {
         var totalTitles = _books.Count;
