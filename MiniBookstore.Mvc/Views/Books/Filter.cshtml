@@ -1,0 +1,60 @@
+@model BookFilterViewModel
+
+@{
+    ViewData["Title"] = "Lọc sách";
+}
+
+<div class="page-header">
+    <div>
+        <h2 class="page-title">Lọc sách theo thể loại và giá</h2>
+        <p class="page-description">
+            Truy vấn chỉ đọc dùng AsNoTracking qua Repository.
+        </p>
+    </div>
+</div>
+
+<form class="form-box mb-4" asp-controller="Books" asp-action="Filter" method="get">
+    <div class="row g-3">
+        <div class="col-md-3">
+            <label>Thể loại</label>
+            <select name="genreId" class="form-control">
+                <option value="">Tất cả</option>
+                @foreach (var genre in Model.Genres)
+                {
+                    <option value="@genre.Id" selected="@(Model.GenreId == genre.Id)">@genre.Name</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label>Giá tối thiểu</label>
+            <input name="minPrice" type="number" class="form-control" value="@Model.MinPrice" />
+        </div>
+        <div class="col-md-3">
+            <label>Giá tối đa</label>
+            <input name="maxPrice" type="number" class="form-control" value="@Model.MaxPrice" />
+        </div>
+        <div class="col-md-3">
+            <label>Từ khóa</label>
+            <input name="keyword" class="form-control" value="@Model.Keyword" />
+        </div>
+    </div>
+    <button class="btn btn-primary mt-3" type="submit">Lọc</button>
+</form>
+
+<div class="info-panel mb-3">
+    <strong>Kết quả:</strong> @Model.Books.Count cuốn sách
+</div>
+
+@if (Model.Books.Count == 0)
+{
+    <p>Không tìm thấy sách phù hợp.</p>
+}
+else
+{
+    <div class="book-grid">
+        @foreach (var item in Model.Books)
+        {
+            <partial name="_BookCard" model="item" />
+        }
+    </div>
+}

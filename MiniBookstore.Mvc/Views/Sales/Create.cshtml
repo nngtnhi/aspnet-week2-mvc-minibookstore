@@ -1,0 +1,47 @@
+@model SaleCreateViewModel
+
+@{
+    ViewData["Title"] = "Tạo đơn bán sách";
+}
+
+<div class="page-header">
+    <div>
+        <h2 class="page-title">Tạo đơn bán sách</h2>
+        <p class="page-description">
+            Nghiệp vụ nhiều bước: tạo Sale, SaleItem và trừ StockQuantity bằng transaction.
+        </p>
+    </div>
+</div>
+
+<form class="form-box" asp-controller="Sales" asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="form-group">
+        <label asp-for="CustomerName">Tên khách hàng</label>
+        <input asp-for="CustomerName" class="form-control" placeholder="Nhập tên khách hàng" />
+        <span asp-validation-for="CustomerName" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="BookId">Chọn sách</label>
+        <select asp-for="BookId" class="form-control"
+                asp-items="@(new SelectList(Model.Books, nameof(BookOptionViewModel.Id), nameof(BookOptionViewModel.DisplayText)))">
+            <option value="">-- Chọn sách --</option>
+        </select>
+        <span asp-validation-for="BookId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Quantity">Số lượng bán</label>
+        <input asp-for="Quantity" class="form-control" />
+        <span asp-validation-for="Quantity" class="text-danger"></span>
+    </div>
+
+    <button class="btn btn-primary" type="submit">Tạo đơn bán</button>
+    <a class="btn btn-secondary ms-2" asp-controller="Sales" asp-action="Index">Xem lịch sử</a>
+</form>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

@@ -7,6 +7,7 @@ public class BookStatsViewModel
     public decimal TotalInventoryValue { get; set; }
     public int OutOfStockCount { get; set; }
     public int NeedReorderCount { get; set; }
+    public int LowStockThreshold { get; set; }
 
     public string TotalInventoryValueText => $"{TotalInventoryValue:N0} VNĐ";
 }

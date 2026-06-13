@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using MiniBookstore.Mvc.Models;
+using MiniBookstore.Mvc.Repositories;
 using MiniBookstore.Mvc.Services;
 using MiniBookstore.Mvc.ViewModels;
 
@@ -7,49 +7,43 @@ namespace MiniBookstore.Mvc.Controllers;
 
 public class BooksController : Controller
 {
-    private readonly BookService _bookService;
+    private readonly IBookService _bookService;
+    private readonly IGenreRepository _genreRepository;
 
-    public BooksController(BookService bookService)
+    public BooksController(IBookService bookService, IGenreRepository genreRepository)
     {
         _bookService = bookService;
+        _genreRepository = genreRepository;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        var books = _bookService.GetAll()
-            .Select(ToListItemViewModel)
-            .ToList();
-
+        var books = await _bookService.GetBookListAsync();
         return View(books);
     }
 
-    public IActionResult Detail(int id)
+    public async Task<IActionResult> Detail(int id)
     {
-        var book = _bookService.GetById(id);
+        var book = await _bookService.GetDetailAsync(id);
 
         if (book == null)
         {
             return NotFound($"Không tìm thấy cuốn sách nào có ID = {id}");
         }
 
-        var viewModel = ToDetailViewModel(book);
-
-        return View(viewModel);
+        return View(book);
     }
 
-    public IActionResult Stats()
+    public async Task<IActionResult> Stats()
     {
-        var stats = _bookService.GetStats();
-
+        var stats = await _bookService.GetStatsAsync();
         return View(stats);
     }
 
     [HttpGet]
-    public IActionResult Search(string? keyword, decimal? minPrice)
+    public async Task<IActionResult> Search(string? keyword, decimal? minPrice)
     {
-        var books = _bookService.Search(keyword, minPrice)
-            .Select(ToListItemViewModel)
-            .ToList();
+        var books = await _bookService.SearchAsync(keyword, minPrice);
 
         var viewModel = new BookSearchViewModel
         {
@@ -62,12 +56,33 @@ public class BooksController : Controller
     }
 
     [HttpGet]
-    public IActionResult Create()
+    public async Task<IActionResult> Filter(int? genreId, decimal? minPrice, decimal? maxPrice, string? keyword)
     {
+        var genres = await _genreRepository.GetAllReadOnlyAsync();
+        var books = await _bookService.FilterBooksAsync(genreId, minPrice, maxPrice, keyword);
+
+        var viewModel = new BookFilterViewModel
+        {
+            GenreId = genreId,
+            MinPrice = minPrice,
+            MaxPrice = maxPrice,
+            Keyword = keyword,
+            Books = books,
+            Genres = genres.Select(g => new GenreOptionViewModel { Id = g.Id, Name = g.Name }).ToList()
+        };
+
+        return View(viewModel);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Create()
+    {
+        var genres = await _genreRepository.GetAllReadOnlyAsync();
+
         var viewModel = new BookCreateViewModel
         {
             StockQuantity = 1,
-            MinStockThreshold = 5
+            Genres = genres.Select(g => new GenreOptionViewModel { Id = g.Id, Name = g.Name }).ToList()
         };
 
         return View(viewModel);
@@ -75,85 +90,19 @@ public class BooksController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Create(BookCreateViewModel model)
+    public async Task<IActionResult> Create(BookCreateViewModel model)
     {
         if (!ModelState.IsValid)
         {
+            var genres = await _genreRepository.GetAllReadOnlyAsync();
+            model.Genres = genres.Select(g => new GenreOptionViewModel { Id = g.Id, Name = g.Name }).ToList();
             return View(model);
         }
 
-        _bookService.Create(model);
+        await _bookService.CreateBookAsync(model);
 
         TempData["SuccessMessage"] = "Đã thêm sách thành công.";
 
         return RedirectToAction(nameof(Index));
-    }
-
-    public IActionResult Welcome()
-    {
-        return Content("Chào mừng đến với hệ thống quản lý Kho Sách - MVC Lab02");
-    }
-
-    public IActionResult BookJson()
-    {
-        var books = _bookService.GetAll()
-            .Select(book => new
-            {
-                book.Id,
-                book.Isbn,
-                book.Title,
-                book.Category,
-                book.Publisher,
-                book.Price,
-                book.StockQuantity
-            });
-
-        return Json(books);
-    }
-
-    public IActionResult GoToList()
-    {
-        return RedirectToAction(nameof(Index));
-    }
-
-    public IActionResult Force404()
-    {
-        return NotFound("Đây là response 404 demo từ action Force404.");
-    }
-
-    public IActionResult CategoryInfo()
-    {
-        return Content("Danh mục hiện có: Công nghệ thông tin, Kỹ năng sống, Khoa học, Văn học");
-    }
-
-    private static BookListItemViewModel ToListItemViewModel(Book book)
-    {
-        return new BookListItemViewModel
-        {
-            Id = book.Id,
-            Isbn = book.Isbn,
-            Title = book.Title,
-            Category = book.Category,
-            Publisher = book.Publisher,
-            Price = book.Price,
-            StockQuantity = book.StockQuantity,
-            MinStockThreshold = book.MinStockThreshold
-        };
-    }
-
-    private static BookDetailViewModel ToDetailViewModel(Book book)
-    {
-        return new BookDetailViewModel
-        {
-            Id = book.Id,
-            Isbn = book.Isbn,
-            Title = book.Title,
-            Category = book.Category,
-            Publisher = book.Publisher,
-            Price = book.Price,
-            StockQuantity = book.StockQuantity,
-            MinStockThreshold = book.MinStockThreshold,
-            LastRestockedAt = book.LastRestockedAt
-        };
     }
 }

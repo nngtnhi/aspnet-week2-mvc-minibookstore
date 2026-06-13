@@ -17,6 +17,12 @@
     <div class="d-flex gap-2">
         <a class="btn btn-secondary"
            asp-controller="Books"
+           asp-action="Filter">
+            Lọc sách
+        </a>
+
+        <a class="btn btn-secondary"
+           asp-controller="Books"
            asp-action="Search">
             Tìm kiếm sách
         </a>
@@ -26,6 +32,25 @@
            asp-action="Create">
             Thêm sách mới
         </a>
+    </div>
+</div>
+
+<div class="data-layer-dashboard">
+    <h3 class="dashboard-title">Data Layer Dashboard</h3>
+    <div class="flow-diagram">
+        <div class="flow-box">Controller</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box">Service</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box">Repository</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box">DbContext</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box">Database</div>
+    </div>
+    <div class="dashboard-description">
+        Khi truy cập <strong>/Books</strong>, danh sách sách được lấy theo luồng: Controller → Service → Repository → DbContext → Database.<br>
+        Dữ liệu không còn được hardcode trong Controller, mà được lấy từ Database thông qua EF Core.
     </div>
 </div>
 

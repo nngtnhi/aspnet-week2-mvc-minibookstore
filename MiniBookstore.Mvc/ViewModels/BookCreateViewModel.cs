@@ -9,7 +9,8 @@ public class BookCreateViewModel
     public string Title { get; set; } = "";
 
     [Required(ErrorMessage = "Thể loại không được để trống")]
-    public string Category { get; set; } = "";
+    [Range(1, int.MaxValue, ErrorMessage = "Vui lòng chọn thể loại")]
+    public int GenreId { get; set; }
 
     [Required(ErrorMessage = "Nhà xuất bản không được để trống")]
     public string Publisher { get; set; } = "";
@@ -20,6 +21,11 @@ public class BookCreateViewModel
     [Range(0, 10_000, ErrorMessage = "Số lượng tồn không được âm")]
     public int StockQuantity { get; set; }
 
-    [Range(0, 10_000, ErrorMessage = "Mức tồn tối thiểu không được âm")]
-    public int MinStockThreshold { get; set; }
+    public List<GenreOptionViewModel> Genres { get; set; } = new();
+}
+
+public class GenreOptionViewModel
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = "";
 }

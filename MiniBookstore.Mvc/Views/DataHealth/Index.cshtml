@@ -1,0 +1,55 @@
+@model DataHealthViewModel
+
+@{
+    ViewData["Title"] = "Data Health";
+}
+
+<div class="page-header">
+    <div>
+        <h2 class="page-title">Data Health Check</h2>
+        <p class="page-description">
+            Kiểm tra migration, seed data, AsNoTracking và transaction.
+        </p>
+    </div>
+</div>
+
+<div class="relationship-table-container">
+    <table class="table relationship-table">
+        <thead>
+            <tr>
+                <th>Check</th>
+                <th>Expected</th>
+                <th>Actual</th>
+                <th>Status</th>
+                <th>Note</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var check in Model.HealthChecks)
+            {
+                <tr>
+                    <td><strong>@check.Check</strong></td>
+                    <td>@check.Expected</td>
+                    <td>@check.Actual</td>
+                    <td>
+                        @if (check.Status == "OK")
+                        {
+                            <span class="badge badge-success">@check.Status</span>
+                        }
+                        else
+                        {
+                            <span class="badge badge-danger">@check.Status</span>
+                        }
+                    </td>
+                    <td>@check.Note</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<p class="mt-4">
+    <a class="btn btn-light" asp-controller="Home" asp-action="Index">
+        Quay lại trang chủ
+    </a>
+</p>

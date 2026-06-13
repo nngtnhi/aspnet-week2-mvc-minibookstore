@@ -1,0 +1,80 @@
+@model List<GenreRelationshipViewModel>
+
+@{
+    ViewData["Title"] = "Genre & Book Relationship";
+}
+
+<div class="page-header">
+    <div>
+        <h2 class="page-title">Genre & Book Relationship</h2>
+        <p class="page-description">
+            Minh họa mối quan hệ 1-Many giữa Genre và Book trong cơ sở dữ liệu.
+        </p>
+    </div>
+</div>
+
+<div class="data-layer-dashboard">
+    <h3 class="dashboard-title">Relationship Overview</h3>
+    <div class="dashboard-description">
+        Mỗi <strong>Genre</strong> có thể có nhiều <strong>Books</strong>. Đây là mối quan hệ 1-Many (Một-Nhiều).
+        Trong EF Core, Genre có navigation property <code>ICollection&lt;Book&gt; Books</code> và Book có foreign key <code>GenreId</code>.
+    </div>
+</div>
+
+<div class="relationship-table-container">
+    <table class="table relationship-table">
+        <thead>
+            <tr>
+                <th>Genre</th>
+                <th>Books</th>
+                <th>Relationship</th>
+                <th>DbSet</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Count == 0)
+            {
+                <tr>
+                    <td colspan="5" class="text-center">Chưa có dữ liệu Genre nào.</td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td><strong>@item.GenreName</strong></td>
+                        <td>
+                            @if (item.BookTitles.Count == 0)
+                            {
+                                <span class="text-muted">Chưa có sách</span>
+                            }
+                            else
+                            {
+                                @string.Join(", ", item.BookTitles)
+                            }
+                        </td>
+                        <td><span class="badge badge-relationship">@item.Relationship</span></td>
+                        <td><code>@item.DbSet</code></td>
+                        <td>
+                            <a class="btn btn-sm btn-primary"
+                               asp-controller="Genres"
+                               asp-action="Index">
+                                View
+                            </a>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+<p class="mt-4">
+    <a class="btn btn-light"
+       asp-controller="Home"
+       asp-action="Index">
+        Quay lại trang chủ
+    </a>
+</p>

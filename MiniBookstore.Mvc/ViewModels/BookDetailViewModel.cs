@@ -3,22 +3,20 @@ namespace MiniBookstore.Mvc.ViewModels;
 public class BookDetailViewModel
 {
     public int Id { get; set; }
+    public string BookCode { get; set; } = "";
     public string Isbn { get; set; } = "";
     public string Title { get; set; } = "";
-    public string Category { get; set; } = "";
+    public string GenreName { get; set; } = "";
     public string Publisher { get; set; } = "";
     public decimal Price { get; set; }
     public int StockQuantity { get; set; }
-    public int MinStockThreshold { get; set; }
-    public DateTime LastRestockedAt { get; set; }
+    public int LowStockThreshold { get; set; }
 
     public string PriceText => $"{Price:N0} VNĐ";
 
     public decimal InventoryValue => Price * StockQuantity;
 
     public string InventoryValueText => $"{InventoryValue:N0} VNĐ";
-
-    public string LastRestockedText => LastRestockedAt.ToString("dd/MM/yyyy HH:mm");
 
     public string StockStatus
     {
@@ -29,9 +27,9 @@ public class BookDetailViewModel
                 return "Hết sách";
             }
 
-            if (StockQuantity <= MinStockThreshold)
+            if (StockQuantity <= LowStockThreshold)
             {
-                return "Cần nhập thêm";
+                return "Sắp hết hàng";
             }
 
             if (StockQuantity >= 20)
@@ -52,9 +50,9 @@ public class BookDetailViewModel
                 return "Cần nhập hàng ngay vì sách đã hết.";
             }
 
-            if (StockQuantity <= MinStockThreshold)
+            if (StockQuantity <= LowStockThreshold)
             {
-                return $"Nên nhập thêm. Tồn kho hiện tại chỉ còn {StockQuantity}, mức tối thiểu là {MinStockThreshold}.";
+                return $"Nên nhập thêm. Tồn kho hiện tại chỉ còn {StockQuantity}, ngưỡng cảnh báo là {LowStockThreshold}.";
             }
 
             return "Tồn kho đang ổn định, chưa cần nhập thêm.";

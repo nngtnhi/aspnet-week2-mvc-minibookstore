@@ -3,12 +3,19 @@
 <div class="book-card">
     <h3>@Model.Title</h3>
 
+    @if (!string.IsNullOrEmpty(Model.BookCode))
+    {
+        <p class="book-meta">
+            Mã sách: @Model.BookCode
+        </p>
+    }
+
     <p class="book-meta">
         ISBN: @Model.Isbn
     </p>
 
     <p class="book-meta">
-        Thể loại: @Model.Category
+        Thể loại: @Model.GenreName
     </p>
 
     <p class="book-meta">

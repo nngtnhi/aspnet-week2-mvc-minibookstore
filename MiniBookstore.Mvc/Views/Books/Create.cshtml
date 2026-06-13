@@ -8,104 +8,58 @@
     <div>
         <h2 class="page-title">Thêm sách mới</h2>
         <p class="page-description">
-            Form POST dùng asp-for để bind dữ liệu vào BookCreateViewModel.
+            Thêm sách mới vào database qua Service và Repository.
         </p>
     </div>
 
-    <a class="btn btn-light"
-       asp-controller="Books"
-       asp-action="Index">
+    <a class="btn btn-light" asp-controller="Books" asp-action="Index">
         Quay lại danh sách
     </a>
 </div>
 
 <div class="form-layout">
-    <form class="form-box"
-          asp-controller="Books"
-          asp-action="Create"
-          method="post">
-
+    <form class="form-box" asp-controller="Books" asp-action="Create" method="post">
         @Html.AntiForgeryToken()
-
         <div asp-validation-summary="All"></div>
 
         <div class="form-group">
             <label asp-for="Title">Tên sách</label>
-            <input asp-for="Title"
-                   class="form-control"
-                   placeholder="Ví dụ: Lập trình C# nâng cao" />
+            <input asp-for="Title" class="form-control" placeholder="Ví dụ: Lập trình C# nâng cao" />
             <span asp-validation-for="Title" class="text-danger"></span>
         </div>
 
         <div class="form-group">
-            <label asp-for="Category">Thể loại</label>
-            <input asp-for="Category"
-                   class="form-control"
-                   placeholder="Ví dụ: Công nghệ thông tin" />
-            <span asp-validation-for="Category" class="text-danger"></span>
+            <label asp-for="GenreId">Thể loại</label>
+            <select asp-for="GenreId" class="form-control"
+                    asp-items="@(new SelectList(Model.Genres, nameof(GenreOptionViewModel.Id), nameof(GenreOptionViewModel.Name)))">
+                <option value="">-- Chọn thể loại --</option>
+            </select>
+            <span asp-validation-for="GenreId" class="text-danger"></span>
         </div>
 
         <div class="form-group">
             <label asp-for="Publisher">Nhà xuất bản</label>
-            <input asp-for="Publisher"
-                   class="form-control"
-                   placeholder="Ví dụ: NXB Trẻ" />
+            <input asp-for="Publisher" class="form-control" placeholder="Ví dụ: NXB Trẻ" />
             <span asp-validation-for="Publisher" class="text-danger"></span>
         </div>
 
         <div class="form-group">
             <label asp-for="Price">Giá bán (VNĐ)</label>
-            <input asp-for="Price"
-                   class="form-control"
-                   placeholder="Ví dụ: 150000" />
+            <input asp-for="Price" class="form-control" placeholder="Ví dụ: 150000" />
             <span asp-validation-for="Price" class="text-danger"></span>
         </div>
 
         <div class="form-group">
             <label asp-for="StockQuantity">Số lượng tồn</label>
-            <input asp-for="StockQuantity"
-                   class="form-control"
-                   placeholder="Ví dụ: 10" />
+            <input asp-for="StockQuantity" class="form-control" placeholder="Ví dụ: 10" />
             <span asp-validation-for="StockQuantity" class="text-danger"></span>
         </div>
 
-        <div class="form-group">
-            <label asp-for="MinStockThreshold">Mức tồn tối thiểu</label>
-            <input asp-for="MinStockThreshold"
-                   class="form-control"
-                   placeholder="Ví dụ: 5" />
-            <span asp-validation-for="MinStockThreshold" class="text-danger"></span>
-        </div>
-
-        <button class="btn btn-primary" type="submit">
-            Lưu sách
-        </button>
-
-        <a class="btn btn-secondary ms-2"
-           asp-controller="Books"
-           asp-action="Index">
-            Hủy
-        </a>
+        <button class="btn btn-primary" type="submit">Lưu sách</button>
+        <a class="btn btn-secondary ms-2" asp-controller="Books" asp-action="Index">Hủy</a>
     </form>
-
-    <div class="info-panel">
-        <h4>Model Binding từ Form POST</h4>
-        <p>
-            Khi bấm <strong>Lưu sách</strong>, ASP.NET Core đọc các input trong form
-            và tự map vào <strong>BookCreateViewModel</strong>.
-        </p>
-        <p>
-            Ví dụ input có <strong>asp-for="Title"</strong>
-            thì dữ liệu bind vào property <strong>Title</strong>.
-        </p>
-        <p class="mb-0">
-            ISBN được tự sinh trong service (ví dụ: ISBN-NEW-009).
-        </p>
-    </div>
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }
